@@ -1,0 +1,42 @@
+<th scope="row"> {{ id }} </th>
+<td>
+  <input type="text" class="form-control" name="name" [value]=position.name (change)="position.name=$event.target.value" />
+</td>
+<td>
+    <input type="text" class="form-control" name="name" [value]=position.quantity (change)="position.quantity=$event.target.value" />
+</td>
+<td>
+  <select class="form-control" name="unit" [value]=position.unit (change)="position.unit=$event.target.value">
+    <option
+    *ngFor="let unit of units();"
+    > {{ unit }} </option>
+  </select>
+</td>
+<td>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" [value]=position.net (change)=calculateGrossFromNet($event.target.value) />
+    <div class="input-group-append">
+      <span class="input-group-text">PLN</span>
+    </div>
+  </div>
+</td>
+<td>
+  <select class="form-control" name="tax" [value]=currentTaxValue() (change)=calculateGrossFromTax($event.target.value)>
+      <option
+      *ngFor="let tax of taxes();"
+      > {{ tax }} </option>
+  </select>
+</td>
+<td>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" [value]=position.gross (change)=calculateNetFromGross($event.target.value) />
+    <div class="input-group-append">
+      <span class="input-group-text">PLN</span>
+    </div>
+  </div>
+</td>
+<td>
+  <button
+    (click)=remove()
+  ><i class="fa fa-trash"></i></button>
+</td>

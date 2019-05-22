@@ -1,0 +1,30 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col" style="width: 8%">Quantity</th>
+        <th scope="col" style="width: 10%">Unit</th>
+        <th scope="col">Netto</th>
+        <th scope="col" style="width: 8%">Tax</th>
+        <th scope="col">Brutto</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <app-single-position
+        *ngFor="let item of invoiceItems; let i = index"
+        [position]=item
+        [id]=i+1
+        (itemRemoved)=removeItem($event)
+      ></app-single-position>
+    </tbody>
+  </table>
+  <div class="invoice__actions">
+      <button
+        (click)=addInvoiceItem()
+        type="button" class="btn btn-primary invoice__actions">
+        Add item&nbsp;
+        <i class="fa fa-plus"></i>
+      </button>
+  </div>
