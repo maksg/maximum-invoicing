@@ -1,9 +1,12 @@
 <th scope="row"> {{ id }} </th>
 <td>
-  <input type="text" class="form-control" name="name" [value]=position.name (change)="position.name=$event.target.value" />
+  <input type="text" class="form-control" name="name" [(ngModel)]=position.name (keyup)=handleAutocompleteName($event) autocomplete="off" />
+	  <ul class="single-position__suggestion-list" *ngIf="suggestions.length > 0">
+	    <li class="single-position__suggestion-item" *ngFor="let suggestion of suggestions" (click)=selectSuggestion(suggestion)>{{ suggestion.label }}</li>
+	  </ul>
 </td>
 <td>
-    <input type="text" class="form-control" name="name" [value]=position.quantity (change)="position.quantity=$event.target.value" />
+  <input type="text" class="form-control" name="name" [value]=position.quantity (change)="position.quantity=$event.target.value" />
 </td>
 <td>
   <select class="form-control" name="unit" [value]=position.unit (change)="position.unit=$event.target.value">

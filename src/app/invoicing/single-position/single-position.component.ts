@@ -1,6 +1,15 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InvoiceItem, Unit, Tax } from '../model/invoice';
 import { PriceCalculator, CalcRequest, ItemPrice } from '../model/price-calculator';
+import { ItemCatalog } from '../model/item-catalog/item-catalog';
+import { Subject } from 'rxjs';
+import { debounceTime, switchMap, tap, map, retry } from 'rxjs/operators';
+import { Item } from '../model/item-catalog/item';
+
+interface ItemSuggestion {
+  name: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-single-position',
@@ -9,6 +18,8 @@ import { PriceCalculator, CalcRequest, ItemPrice } from '../model/price-calculat
 })
 
 export class SinglePositionComponent implements OnInit {
+
+  readonly WAIT_TIME_BEFORE_SEARCH = 400;
 
   @Input()
   private id: number;
@@ -20,9 +31,48 @@ export class SinglePositionComponent implements OnInit {
 
   private priceCalculator: PriceCalculator = new PriceCalculator();
 
-  constructor() { }
+  private searchQuery = new Subject<string>();
+
+  private searchResult = this.searchQuery.pipe(
+    debounceTime(this.WAIT_TIME_BEFORE_SEARCH),
+    switchMap( q => this.itemsCatalog.items(q)),
+    tap(data => console.log(data)),
+    map(data => this.toAnotherForm(data)),
+    tap(data => console.log(data)),
+    retry(3),
+  );
+	
+	suggestions: ItemSuggestion[] = [];
+
+  constructor(
+    private itemsCatalog: ItemCatalog
+  ) { }
 
   ngOnInit() {
+    this.searchResult.subscribe((items) => {
+      this.suggestions = items;
+    });
+  }
+
+  handleAutocompleteName($event: any): void {
+    this.searchQuery.next($event.target.value);
+  }
+  
+  toAnotherForm(data: Item[]): ItemSuggestion[] {
+    return data.map(i => {
+      return {
+        name: i.name,
+        label: i.name
+      };
+    });
+  }
+
+  selectSuggestion(item: ItemSuggestion): void {
+    this.position = {
+      ...this.position,
+      name: item.name
+    };
+    this.suggestions = [];
   }
 
   calculateGrossFromNet(net: number): void {
