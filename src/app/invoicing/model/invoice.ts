@@ -1,9 +1,15 @@
 import { TextAst } from '@angular/compiler';
 
 export class Invoice {
-    number: string;
+    general: General;
     client: Client
     items: [InvoiceItem];
+}
+
+export class General {
+    issueDate: string;
+    number: string;
+    dueDate: string;
 }
 
 export class Client {
