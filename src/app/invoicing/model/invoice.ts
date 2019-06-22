@@ -1,5 +1,19 @@
 import { TextAst } from '@angular/compiler';
 
+export class Invoice {
+    number: string;
+    client: Client
+    items: [InvoiceItem];
+}
+
+export class Client {
+    companyName: string;
+    address: string;
+    zipCode: string;
+    country: string;
+    nip: string;
+}
+
 export interface InvoiceItem {
     name: string;
     quantity: number;

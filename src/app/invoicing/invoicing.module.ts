@@ -7,9 +7,11 @@ import { ItemCatalog } from './model/item-catalog/item-catalog';
 import { LocalItemCatalog } from './model/item-catalog/local-item-catalog';
 import { HttpItemCatalog } from './model/item-catalog/http-item-catalog';
 import { FormsModule } from '@angular/forms';
+import { ClientBoxComponent } from './client-box/client-box.component';
+import { InvoicePositionsComponent } from './invoice-positions/invoice-positions.component';
 
 @NgModule({
-  declarations: [InvoiceComponent, SinglePositionComponent],
+  declarations: [InvoiceComponent, SinglePositionComponent, ClientBoxComponent, InvoicePositionsComponent],
   imports: [
     CommonModule,
     FormsModule,
