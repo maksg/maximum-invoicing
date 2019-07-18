@@ -7,11 +7,13 @@ import { NavBarComponent } from './layout/nav-bar/nav-bar.component';
 import { HeroModule } from './hero/hero.module';
 import { InvoicingModule } from './invoicing/invoicing.module';
 import { FormsModule } from '@angular/forms';
+// import { InvoiceSummaryComponent } from './invoicing/invoice-summary/invoice-summary.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent
+    // InvoiceSummaryComponent
   ],
   imports: [
     BrowserModule,

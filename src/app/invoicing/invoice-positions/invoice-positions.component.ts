@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { InvoiceItem, InvoiceItemFactory } from '../model/invoice';
 
 @Component({
@@ -8,9 +8,14 @@ import { InvoiceItem, InvoiceItemFactory } from '../model/invoice';
 })
 
 export class InvoicePositionsComponent implements OnInit {
+	
+  @Input()
+  private invoiceItems: InvoiceItem[];
 
-  invoiceItems: InvoiceItem[] = [];
-  invoiceItemFactory: InvoiceItemFactory;
+  @Output()
+  itemsChanged: EventEmitter<InvoiceItem[]> = new EventEmitter();
+  
+  private invoiceItemFactory: InvoiceItemFactory;
 
   constructor() {
     this.invoiceItemFactory = new InvoiceItemFactory();
@@ -21,10 +26,16 @@ export class InvoicePositionsComponent implements OnInit {
 
   addInvoiceItem(): void {
     this.invoiceItems.push(this.invoiceItemFactory.createNewInvoiceItem());
+    this.itemsChanged.next(this.invoiceItems);
   }
 
   removeItem(item: InvoiceItem): void {
-    this.invoiceItems = this.invoiceItems.filter(i => i !== item);
+    this.invoiceItems = this.invoiceItems.filter(p => p.id !== item.id);
+    this.itemsChanged.next(this.invoiceItems);
+  }
+
+  handlePositionChanged(positon: InvoiceItem): void {
+    this.itemsChanged.next(this.invoiceItems);
   }
 
 }

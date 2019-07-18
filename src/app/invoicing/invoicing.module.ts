@@ -10,9 +10,10 @@ import { FormsModule } from '@angular/forms';
 import { ClientBoxComponent } from './client-box/client-box.component';
 import { InvoicePositionsComponent } from './invoice-positions/invoice-positions.component';
 import { GeneralBoxComponent } from './general-box/general-box.component';
+import { InvoiceSummaryComponent } from './invoice-summary/invoice-summary.component';
 
 @NgModule({
-  declarations: [InvoiceComponent, SinglePositionComponent, ClientBoxComponent, InvoicePositionsComponent, GeneralBoxComponent],
+  declarations: [InvoiceComponent, SinglePositionComponent, ClientBoxComponent, InvoicePositionsComponent, GeneralBoxComponent, InvoiceSummaryComponent],
   imports: [
     CommonModule,
     FormsModule,

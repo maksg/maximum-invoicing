@@ -3,7 +3,7 @@ import { InvoiceItem, Unit, Tax } from '../model/invoice';
 import { PriceCalculator, CalcRequest, ItemPrice } from '../model/price-calculator';
 import { ItemCatalog } from '../model/item-catalog/item-catalog';
 import { Subject } from 'rxjs';
-import { debounceTime, switchMap, tap, map, retry } from 'rxjs/operators';
+import { debounceTime, switchMap, tap, map, retry, filter } from 'rxjs/operators';
 import { Item } from '../model/item-catalog/item';
 
 interface ItemSuggestion {
@@ -20,6 +20,7 @@ interface ItemSuggestion {
 export class SinglePositionComponent implements OnInit {
 
   readonly WAIT_TIME_BEFORE_SEARCH = 400;
+  readonly MINIMAL_QUERY_LENGTH = 3;
 
   @Input()
   private id: number;
@@ -29,14 +30,17 @@ export class SinglePositionComponent implements OnInit {
   @Output()
   private itemRemoved: EventEmitter<InvoiceItem> = new EventEmitter<InvoiceItem>();
 
+  @Output()
+  private itemChanged: EventEmitter<InvoiceItem> = new EventEmitter();
+
   private priceCalculator: PriceCalculator = new PriceCalculator();
 
   private searchQuery = new Subject<string>();
 
   private searchResult = this.searchQuery.pipe(
     debounceTime(this.WAIT_TIME_BEFORE_SEARCH),
+    filter(q => q.length >= this.MINIMAL_QUERY_LENGTH),
     switchMap( q => this.itemsCatalog.items(q)),
-    tap(data => console.log(data)),
     map(data => this.toAnotherForm(data)),
     tap(data => console.log(data)),
     retry(3),
@@ -68,10 +72,7 @@ export class SinglePositionComponent implements OnInit {
   }
 
   selectSuggestion(item: ItemSuggestion): void {
-    this.position = {
-      ...this.position,
-      name: item.name
-    };
+    this.position.name = item.name;
     this.suggestions = [];
   }
 
@@ -85,6 +86,7 @@ export class SinglePositionComponent implements OnInit {
     }
     const result = this.priceCalculator.calculate(calcRequest);
     this.position.gross = result.gross;
+    this.itemChanged.next(this.position);
   }
 
   calculateGrossFromTax(tax: string): void {
@@ -97,6 +99,7 @@ export class SinglePositionComponent implements OnInit {
     }
     const result = this.priceCalculator.calculate(calcRequest);
     this.position.gross = result.gross;
+    this.itemChanged.next(this.position);
   }
 
   calculateNetFromGross(gross: number): void {
@@ -108,6 +111,7 @@ export class SinglePositionComponent implements OnInit {
     }
     const result = this.priceCalculator.calculate(calcRequest);
     this.position.net = result.net;
+    this.itemChanged.next(this.position);
   }
 
   remove(): void {

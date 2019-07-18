@@ -16,6 +16,7 @@
       *ngFor="let item of invoiceItems; let i = index"
       [position]=item
       [id]=i+1
+      (itemChanged)=handlePositionChanged($event)
       (itemRemoved)=removeItem($event)
     ></app-single-position>
   </tbody>
